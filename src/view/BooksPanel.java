@@ -5,8 +5,6 @@
 package view;
 
 import userdata.BookDao;
-
-
 import java.awt.GridLayout;
 import java.util.List;
 import javax.swing.ImageIcon;
