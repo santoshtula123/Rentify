@@ -22,7 +22,7 @@ public class MySQLConnection implements Database{
         
         try {
             String username = "root";
-            String password = "SQL_@bi2025";
+            String password = "Rentification123!";
             String database = "rentify";
             Connection connection; 
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + database, username, password);

@@ -5,6 +5,7 @@
 package view;
 
 import java.awt.event.ActionListener;
+import view.wishlist;
 
 /**
  *
@@ -17,6 +18,8 @@ public class UserDashboard extends javax.swing.JFrame {
     /**
      * Creates new form dashboard
      */
+    private int currentUserId;
+    
     public UserDashboard() {
         initComponents();
         setSize(1293,760);
@@ -468,11 +471,15 @@ public class UserDashboard extends javax.swing.JFrame {
 
     private void WishlistBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_WishlistBTNActionPerformed
         // TODO add your handling code here:
+        wishlist WishlistPage = new wishlist(currentUserId);
+        WishlistPage.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_WishlistBTNActionPerformed
 
     private void SupportBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SupportBTNActionPerformed
         // TODO add your handling code here:
-        ProductPage productPage = new ProductPage();
+        
+        ProductPage productPage = new ProductPage(1);
         productPage.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_SupportBTNActionPerformed
@@ -514,7 +521,7 @@ public class UserDashboard extends javax.swing.JFrame {
 
     private void SearchBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBTNActionPerformed
         // TODO add your handling code here:
-        ProductPage productPage = new ProductPage();
+        ProductPage productPage = new ProductPage(1);
         productPage.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_SearchBTNActionPerformed

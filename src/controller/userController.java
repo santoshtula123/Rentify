@@ -38,12 +38,12 @@ public class userController{
                     char[] passwordChars = userView.getPasswordField().getPassword();
                     String password = new String(passwordChars);
                     
-                    User_model usermodel = new User_model(fullname, username, email, password);
+                    User_model usermodel = new User_model( username, email, password);
                     boolean check = userdao.check(usermodel);
                     if(check){
                         JOptionPane.showMessageDialog(userView, "Already exist");
                     }else{
-                        userdao.signup(usermodel);
+                        userdao.signup(usermodel,fullname);
                         JOptionPane.showMessageDialog(userView, "Successfull");
                     }
                 }catch(Exception ext){
