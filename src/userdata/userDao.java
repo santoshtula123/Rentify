@@ -10,14 +10,16 @@ import java.sql.*;
 public class userDao {
     MySQLConnection mysql = new MySQLConnection();
     
-    public void signup(User_model user){
+    public void signup(User_model user, String fullname){
         Connection conn = mysql.openConnection();
-        String sql = "insert into users (username, email, password) values(?,?,?)";
+        String sql = "insert into users (fullname, username, email, password) values(?,?,?,?)";
         try (PreparedStatement pstm = conn.prepareStatement(sql)){
-            pstm.setString(1, user.getUsername());
-            pstm.setString(2, user.getEmail());
-            pstm.setString(3, user.getPassword());
-            pstm.executeUpdate();
+            pstm.setString(1, fullname);
+            pstm.setString(2, user.getUsername());
+            pstm.setString(3, user.getEmail());
+            pstm.setString(4, user.getPassword());
+            int rows = pstm.executeUpdate();
+            System.out.println("Signup rows inserted = " + rows);
             
         } catch(Exception ex){
             System.out.println(ex);

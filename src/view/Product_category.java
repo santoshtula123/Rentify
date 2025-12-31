@@ -4,43 +4,131 @@
  */
 package view;
 
-import view.BooksPanel;
-import dao.ProductDao;
-import java.util.List;
+import userdata.ProductDao;
 import model.ProductModel;
-
+import java.util.List;
 /**
  *
  * @author ASUS
  */
 public class Product_category extends javax.swing.JFrame {
     
-    
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Product_category.class.getName());
-
-    /**
-     * Creates new form Product_category
-     */
-    public Product_category() {
+      private List<ProductModel> allProducts;
+      private String currentMode = "NONE";
+      private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Product_category.class.getName());
+      
+      
+       public Product_category() {
         initComponents();
+        setupProductsPanel();
+        jScrollPane1.getVerticalScrollBar().setUnitIncrement(16); 
         loadProductsFromDatabase();
     }
-    private void showProducts(String typeFilter) {
-    booksjPanel2.removeAll();
+ 
     
-    if("book".equalsIgnoreCase(typeFilter)){
-        
-        booksjPanel2.setLayout(new java.awt.BorderLayout());
-        booksjPanel2.add(new BooksPanel(),java.awt.BorderLayout.CENTER);
-    } else if ("Movie".equals(typeFilter)){
-   
-    }
-    booksjPanel2.revalidate();
-    booksjPanel2.repaint();
-    }
-    
+                           
+      private void setupProductsPanel() {
+          booksjPanel2.removeAll();
+          booksjPanel2.setLayout(new javax.swing.BoxLayout(booksjPanel2, javax.swing.BoxLayout.Y_AXIS));
 
+          javax.swing.JScrollPane productScroll = new javax.swing.JScrollPane(booksjPanel2, javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                    productScroll.setBorder(null);
+                    productScroll.getVerticalScrollBar().setUnitIncrement(16); // smooth scroll
+                    productScroll.getViewport().setBackground(java.awt.Color.WHITE);
+                    productScroll.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 12));
+
+                    jScrollPane1.setViewportView(booksjPanel2);
+                }
+
+        private javax.swing.JPanel createProductCard(ProductModel p) {
+            javax.swing.JPanel card = new javax.swing.JPanel();
+            card.setPreferredSize(new java.awt.Dimension(1000, 160));
+            card.setBackground(java.awt.Color.WHITE);
+            card.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.LIGHT_GRAY));
+            card.setLayout(new java.awt.BorderLayout());
+
+            javax.swing.JLabel nameLbl = new javax.swing.JLabel(p.getProductName());
+            nameLbl.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 18));
+
+            javax.swing.JLabel typeLbl = new javax.swing.JLabel("Type: " + p.getProductType());
+            javax.swing.JLabel priceLbl = new javax.swing.JLabel("Rs. " + p.getProductPrice());
+            priceLbl.setForeground(new java.awt.Color(220, 38, 38));
+
+            javax.swing.JPanel center = new javax.swing.JPanel();
+            center.setOpaque(false);
+            center.setLayout(new javax.swing.BoxLayout(center, javax.swing.BoxLayout.Y_AXIS));
+            center.add(nameLbl);
+            center.add(typeLbl);
+            center.add(priceLbl);
+
+            card.add(center, java.awt.BorderLayout.CENTER);
+            return card;
+        }
+
+           private void showProducts(String typeFilter) {
+            booksjPanel2.removeAll();
+
+            if (allProducts == null) {
+                booksjPanel2.revalidate();
+                booksjPanel2.repaint();
+                return;
+            }
+
+            for (ProductModel p : allProducts) {
+                String t = p.getProductType();  // "Book" or "Movie"
+                if ("Book".equalsIgnoreCase(typeFilter) && !"Book".equalsIgnoreCase(t)) { continue; }
+                if ("Movie".equalsIgnoreCase(typeFilter) && !"Movie".equalsIgnoreCase(t)) { continue; }           
+                booksjPanel2.add(createProductCard(p));
+            }
+
+            booksjPanel2.revalidate();
+            booksjPanel2.repaint();
+        }
+
+         private void refreshListFromCheckboxes() {
+            if (!"BOOKS_PAGE".equals(currentMode) && !"MOVIES_PAGE".equals(currentMode)) {
+            return;
+        }
+
+            booksjPanel2.removeAll();
+
+            boolean booksChecked  = checkbox1.getState();
+            boolean moviesChecked = checkbox2.getState();
+
+            for (ProductModel p : allProducts) {
+                String t = p.getProductType();
+                boolean isBook  = "Book".equalsIgnoreCase(t);
+                boolean isMovie = "Movie".equalsIgnoreCase(t);
+
+                if ("BOOKS_PAGE".equals(currentMode) && !isBook)  continue;
+                if ("MOVIES_PAGE".equals(currentMode) && !isMovie) continue;
+
+                if (!booksChecked  && isBook)  continue;
+                if (!moviesChecked && isMovie) continue;
+
+                booksjPanel2.add(createProductCard(p));
+            }
+
+            if (!booksChecked && !moviesChecked) {
+                booksjPanel2.removeAll();
+                for (ProductModel p : allProducts) {
+                    String t = p.getProductType();
+                    boolean isBook  = "Book".equalsIgnoreCase(t);
+                    boolean isMovie = "Movie".equalsIgnoreCase(t);
+
+                    if ("BOOKS_PAGE".equals(currentMode) && !isBook)  continue;
+                    if ("MOVIES_PAGE".equals(currentMode) && !isMovie) continue;
+
+                    booksjPanel2.add(createProductCard(p));
+                }
+            }
+
+            booksjPanel2.revalidate();
+            booksjPanel2.repaint();
+        }
+
+
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -73,14 +161,14 @@ public class Product_category extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
         libraryBTN = new javax.swing.JButton();
         Bookbtn = new javax.swing.JButton();
         Moviesbtn = new javax.swing.JButton();
@@ -166,7 +254,7 @@ public class Product_category extends javax.swing.JFrame {
 
         booksjPanel2.setBackground(new java.awt.Color(255, 255, 255));
         booksjPanel2.setPreferredSize(new java.awt.Dimension(1192, 1192));
-        booksjPanel2.setLayout(new java.awt.GridLayout(5, 1));
+        booksjPanel2.setLayout(new java.awt.GridLayout(10, 2));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -183,27 +271,27 @@ public class Product_category extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(33, 33, 33)
                 .addComponent(jLabel6)
-                .addGap(28, 28, 28)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(885, Short.MAX_VALUE))
+                .addContainerGap(1238, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
+                        .addGap(104, 104, 104)
                         .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel13))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
+                        .addGap(72, 72, 72)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         booksjPanel2.add(jPanel2);
@@ -217,6 +305,7 @@ public class Product_category extends javax.swing.JFrame {
         jLabel15.setText("The Secret Library");
         jLabel15.setPreferredSize(new java.awt.Dimension(98, 20));
 
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/The secret library (1) (2).png"))); // NOI18N
         jLabel2.setText("jLabel2");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -230,20 +319,20 @@ public class Product_category extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
-                .addContainerGap(907, Short.MAX_VALUE))
+                .addContainerGap(1210, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel14)
-                .addGap(131, 131, 131))
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel14)))
+                .addGap(58, 58, 58))
         );
 
         booksjPanel2.add(jPanel4);
@@ -264,63 +353,30 @@ public class Product_category extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(41, 41, 41)
+                .addGap(36, 36, 36)
                 .addComponent(jLabel9)
-                .addGap(26, 26, 26)
+                .addGap(31, 31, 31)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel17))
-                .addContainerGap(949, Short.MAX_VALUE))
+                .addContainerGap(1227, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel17)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(103, 103, 103)
+                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel17))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         booksjPanel2.add(jPanel5);
-
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel6.setPreferredSize(new java.awt.Dimension(1280, 202));
-
-        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/homo.png"))); // NOI18N
-
-        jLabel11.setText("Homosapiens");
-
-        jLabel19.setText("Type: Book");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel18)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel19))
-                .addContainerGap(1035, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(67, 67, 67)
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel19))
-        );
-
-        booksjPanel2.add(jPanel6);
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -337,25 +393,66 @@ public class Product_category extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addComponent(jLabel10)
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel20)
                     .addComponent(jLabel21))
-                .addContainerGap(960, Short.MAX_VALUE))
+                .addContainerGap(1243, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(68, 68, 68)
-                .addComponent(jLabel20)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel21)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(57, 57, 57)
+                        .addComponent(jLabel20)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel21)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         booksjPanel2.add(jPanel7);
+
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/Devil.png"))); // NOI18N
+
+        jLabel23.setText("The Devils Deadline");
+
+        jLabel24.setText("Type: Movie");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel23)
+                    .addComponent(jLabel24))
+                .addContainerGap(1213, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(125, 125, 125)
+                .addComponent(jLabel23)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel24)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel22)
+                .addGap(62, 62, 62))
+        );
+
+        booksjPanel2.add(jPanel8);
 
         jScrollPane1.setViewportView(booksjPanel2);
 
@@ -554,18 +651,12 @@ public class Product_category extends javax.swing.JFrame {
     }//GEN-LAST:event_checkbox1PropertyChange
 
     private void checkbox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkbox1ItemStateChanged
-        if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED){
-            showProducts("Book");
-        } else {
-            
-        }
-        // TODO add your handling code here:
+        refreshListFromCheckboxes();
+          // TODO add your handling code here:
     }//GEN-LAST:event_checkbox1ItemStateChanged
 
     private void checkbox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkbox2ItemStateChanged
-        if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED){
-            showProducts("Movie");
-        } 
+       refreshListFromCheckboxes();
         // TODO add your handling code here:
     }//GEN-LAST:event_checkbox2ItemStateChanged
 
@@ -606,18 +697,18 @@ public class Product_category extends javax.swing.JFrame {
     private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -629,21 +720,26 @@ public class Product_category extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JButton libraryBTN;
     // End of variables declaration//GEN-END:variables
     
-
-private void loadProductsFromDatabase() {
-        ProductDao dao = new ProductDao();
-        java.util.List<ProductModel> list = dao.getAll();
-        
-        for(ProductModel p : list) {
-            System.out.println(p.getProductID() + " - " + p.getProductName() + " - " + p.getProductType() + " - " + p.getProductForm());
-        }
+    private void loadProductsFromDatabase() {
+        try {
+           ProductDao dao = new ProductDao();
+           allProducts = dao.getAllProducts();   // or your real DAO method name
+           showProducts("ALL");
+       } catch (Exception ex) {
+           ex.printStackTrace();
+           javax.swing.JOptionPane.showMessageDialog(
+                   this,
+                   "Failed to load products.",
+                   "Error",
+                   javax.swing.JOptionPane.ERROR_MESSAGE
+           );
+       }
     }
-  
 }

@@ -344,7 +344,8 @@ public class MoviePage extends javax.swing.JFrame {
 
     private void SupportBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SupportBTNActionPerformed
         // TODO add your handling code here:
-        ProductPage productPage = new ProductPage();
+        int productId = 1;
+        ProductPage productPage = new ProductPage(productId);
         productPage.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_SupportBTNActionPerformed
@@ -381,7 +382,8 @@ public class MoviePage extends javax.swing.JFrame {
 
     private void SearchBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBTNActionPerformed
         // TODO add your handling code here:
-        ProductPage productPage = new ProductPage();
+        int productId = 1;
+        ProductPage productPage = new ProductPage(productId);
         productPage.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_SearchBTNActionPerformed

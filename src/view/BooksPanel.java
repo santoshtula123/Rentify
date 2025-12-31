@@ -4,8 +4,7 @@
  */
 package view;
 
-import dao.Book;
-import dao.BookDao;
+import userdata.BookDao;
 
 
 import java.awt.GridLayout;

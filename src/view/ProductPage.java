@@ -4,6 +4,9 @@
  */
 package view;
 
+import userdata.ProductDao;
+import model.ProductModel;
+
 /**
  *
  * @author zenni
@@ -12,12 +15,38 @@ public class ProductPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ProductPage.class.getName());
 
+
     /**
      * Creates new form productPage
      */
-    public ProductPage() {
+    
+    private ProductDao productDao = new ProductDao();
+    
+    public ProductPage(int productId) {
         initComponents();
+        loadProduct(productId);
     }
+    
+        private void loadProduct(int productId) {
+    ProductModel p = productDao.getProductById(productId);
+    if (p == null) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Product not found: " + productId);
+        return;
+    }
+
+    itemName.setText(p.getProductName());
+    directorName.setText(p.getProductSynopsis());  // or another field
+    jLabel9.setText("Rs. " + p.getProductPrice());
+
+    try {
+        javax.swing.ImageIcon icon =
+                new javax.swing.ImageIcon(getClass().getResource(p.getProductImage()));
+        Profile_icon6.setIcon(icon);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+ }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -307,8 +336,7 @@ public class ProductPage extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new ProductPage().setVisible(true));
-    }
+   java.awt.EventQueue.invokeLater(() -> new ProductPage(1).setVisible(true));    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Books;

@@ -30,6 +30,7 @@ String sql = "INSERT INTO products (productName , productImage, productPrice, " 
             pstmt.setString(5, product.getProductType());
             pstmt.setString(6, product.getProductForm());
             pstmt.setInt(7, product.getProductQuantity());
+
             
             pstmt.executeUpdate();
         } catch (SQLException ex) {
@@ -57,7 +58,7 @@ String sql = "INSERT INTO products (productName , productImage, productPrice, " 
  */
     try (PreparedStatement pstmt = conn.prepareStatement(sql);
          ResultSet rs = pstmt.executeQuery()) {
-        while (rs.next()) {
+         while (rs.next()) {
             ProductModel product = new ProductModel(
                 rs.getInt("id"),
                 rs.getString("productName"),
@@ -65,7 +66,7 @@ String sql = "INSERT INTO products (productName , productImage, productPrice, " 
                 rs.getInt("productPrice"),
                 rs.getString("productSynopsis"),
                 rs.getString("productType"),
-                rs.getString("productForm"),  
+                rs.getString("productForm"),
                 rs.getInt("productQuantity")
             );
             products.add(product);

@@ -22,9 +22,11 @@ package model;
         private int productQuantity;
         
         
-        public ProductModel(String productName, String productImage , int productPrice, String productSynopsis, String productType, String productForm, int productQuantity){
+
+        public ProductModel(String productName, String productImage, int productPrice, String productSynopsis, String productType, String productForm, int productQuantity){
+ 
             this.productName = productName;
-            this.productImage = productImage;
+            this.productImage = "src/pictures/" + productImage;
             this.productPrice = productPrice;
             this.productSynopsis = productSynopsis;
             this.productType = productType;
@@ -32,11 +34,11 @@ package model;
             this.productQuantity = productQuantity;
         }
 
-        // Used when creating a new product (no ID yet)
-        public ProductModel(int product_ID, String productName, String productImage , int productPrice, String productSynopsis, String productType, String productForm, int productQuantity) {
+
+        public ProductModel(int product_ID, String productName, String productImage, int productPrice, String productSynopsis, String productType, String productForm, int productQuantity) {
             this.product_ID = product_ID;
             this.productName = productName;
-            this.productImage = productImage;
+            this.productImage = "src/pictures/" + productImage;
             this.productPrice = productPrice;
             this.productSynopsis = productSynopsis;
             this.productType = productType; //true for book and false for movie
