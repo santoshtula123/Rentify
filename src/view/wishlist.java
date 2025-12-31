@@ -10,6 +10,10 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
+import model.User_model;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
 
 /**
@@ -153,27 +157,52 @@ removeBtn.addActionListener(e -> {
     });
      }
     
-    public wishlist(int userId) {
+      public wishlist(int userId) {
         this.currentUserId = userId;
         initComponents();
+        ContentPanel.setLayout(new java.awt.CardLayout());
         
-        itemsContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
-        itemsContainer.setBounds(40, 120, 880, 400);
+        ContentPanel.add(ProfilePanel, "Profile");
+        ContentPanel.add(OrderPanel, "Orders");
+        ContentPanel.add(HistoryPanel, "History");
+        ContentPanel.add(WishlistPanel, "Wishlist");
         
-        WishlistPanel.add(itemsContainer);
+        setupWishlistPanel();
+        loadWishlistFromDatabase();
         
-        loadWishlist();
     }
+
     
-     private void loadWishlist(){
-         try {
-             List<ProductModel> items = WishlistDao.getWishlist(currentUserId);
-             showItemsInCards(items);
-         } catch (SQLException ex) {
-             ex.printStackTrace();
-             JOptionPane.showMessageDialog(this, "Failed to load wishlist. ");
-         }
+    private JPanel itemsContainer;
+    private WishlistDao wishlistDao = new WishlistDao();
+    
+    
+   
+    private void setupWishlistPanel() {
+       WishlistPanel.setLayout(null);
+
+        itemsContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
+        itemsContainer.setOpaque(false);
+        itemsContainer.setBounds(40, 120, 880, 400);
+
+        WishlistPanel.add(itemsContainer);
     }
+
+        private void loadWishlistFromDatabase() {
+            try {
+                java.util.List<ProductModel> items = wishlistDao.getWishlist(currentUserId);
+                showItemsInCards(items);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Failed to load wishlist.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    
+    
+     
      private void showItemsInCards(List<ProductModel> items) {
          itemsContainer.removeAll();
          for (ProductModel p : items){
@@ -210,7 +239,20 @@ removeBtn.addActionListener(e -> {
          
          return card;
     }     
-     
+    
+     public static void main(String args[]) {
+         javax.swing.SwingUtilities.invokeLater(() -> {
+        javax.swing.JFrame f = new javax.swing.JFrame("Wishlist test");
+        f.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        f.getContentPane().add(new wishlist(1)); // use a real user_id that exists
+        f.pack();
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+    });
+
+       
+       
+     }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -224,10 +266,14 @@ removeBtn.addActionListener(e -> {
         jLabel1 = new javax.swing.JLabel();
         libraryBTN = new javax.swing.JButton();
 <<<<<<< HEAD
+<<<<<<< HEAD
         bookbtn = new javax.swing.JButton();
 =======
         bookbutton = new javax.swing.JButton();
 >>>>>>> 6541989 (Added code and modified)
+=======
+        bookbtn = new javax.swing.JButton();
+>>>>>>> 818be83 (updates made to product category)
         Moviesbtn = new javax.swing.JButton();
         newestbtn = new javax.swing.JButton();
         supportbtn = new javax.swing.JButton();
@@ -245,6 +291,7 @@ removeBtn.addActionListener(e -> {
         WishlistPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -259,6 +306,9 @@ removeBtn.addActionListener(e -> {
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
 >>>>>>> 6541989 (Added code and modified)
+=======
+        addtoWishlist = new javax.swing.JLabel();
+>>>>>>> 818be83 (updates made to product category)
 
         setBackground(new java.awt.Color(249, 250, 251));
         setLayout(null);
@@ -279,10 +329,14 @@ removeBtn.addActionListener(e -> {
         libraryBTN.setBounds(310, 30, 156, 36);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 818be83 (updates made to product category)
         bookbtn.setBackground(new java.awt.Color(232, 241, 253));
         bookbtn.setText("Books");
         bookbtn.setPreferredSize(new java.awt.Dimension(136, 136));
         bookbtn.addActionListener(new java.awt.event.ActionListener() {
+<<<<<<< HEAD
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bookbtnActionPerformed(evt);
             }
@@ -299,13 +353,20 @@ removeBtn.addActionListener(e -> {
             }
         });
         bookbutton.addActionListener(new java.awt.event.ActionListener() {
+=======
+>>>>>>> 818be83 (updates made to product category)
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bookbuttonActionPerformed(evt);
+                bookbtnActionPerformed(evt);
             }
         });
+<<<<<<< HEAD
         add(bookbutton);
         bookbutton.setBounds(490, 30, 156, 36);
 >>>>>>> 6541989 (Added code and modified)
+=======
+        add(bookbtn);
+        bookbtn.setBounds(490, 30, 156, 36);
+>>>>>>> 818be83 (updates made to product category)
 
         Moviesbtn.setBackground(new java.awt.Color(232, 241, 253));
         Moviesbtn.setText("Movies");
@@ -420,10 +481,15 @@ removeBtn.addActionListener(e -> {
         ContentPanel.setLayout(new java.awt.CardLayout());
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         ProfilePanel.setBackground(new java.awt.Color(255, 255, 255));
 
 =======
 >>>>>>> 6541989 (Added code and modified)
+=======
+        ProfilePanel.setBackground(new java.awt.Color(255, 255, 255));
+
+>>>>>>> 818be83 (updates made to product category)
         javax.swing.GroupLayout ProfilePanelLayout = new javax.swing.GroupLayout(ProfilePanel);
         ProfilePanel.setLayout(ProfilePanelLayout);
         ProfilePanelLayout.setHorizontalGroup(
@@ -438,10 +504,15 @@ removeBtn.addActionListener(e -> {
         ContentPanel.add(ProfilePanel, "card2");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         OrderPanel.setBackground(new java.awt.Color(255, 255, 255));
 
 =======
 >>>>>>> 6541989 (Added code and modified)
+=======
+        OrderPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+>>>>>>> 818be83 (updates made to product category)
         javax.swing.GroupLayout OrderPanelLayout = new javax.swing.GroupLayout(OrderPanel);
         OrderPanel.setLayout(OrderPanelLayout);
         OrderPanelLayout.setHorizontalGroup(
@@ -456,10 +527,15 @@ removeBtn.addActionListener(e -> {
         ContentPanel.add(OrderPanel, "card2");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         HistoryPanel.setBackground(new java.awt.Color(255, 255, 255));
 
 =======
 >>>>>>> 6541989 (Added code and modified)
+=======
+        HistoryPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+>>>>>>> 818be83 (updates made to product category)
         javax.swing.GroupLayout HistoryPanelLayout = new javax.swing.GroupLayout(HistoryPanel);
         HistoryPanel.setLayout(HistoryPanelLayout);
         HistoryPanelLayout.setHorizontalGroup(
@@ -481,6 +557,7 @@ removeBtn.addActionListener(e -> {
         WishlistPanel.add(jLabel2);
         jLabel2.setBounds(60, 30, 160, 54);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/Harry_Potter.png"))); // NOI18N
@@ -541,6 +618,17 @@ removeBtn.addActionListener(e -> {
         jLabel15.setText("Rs. 1499");
         WishlistPanel.add(jLabel15);
         jLabel15.setBounds(610, 350, 100, 20);
+=======
+        addtoWishlist.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        addtoWishlist.setText("Add to Wishlist");
+        addtoWishlist.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                addtoWishlistMouseClicked(evt);
+            }
+        });
+        WishlistPanel.add(addtoWishlist);
+        addtoWishlist.setBounds(770, 460, 140, 30);
+>>>>>>> 818be83 (updates made to product category)
 
 >>>>>>> 6541989 (Added code and modified)
         ContentPanel.add(WishlistPanel, "card2");
@@ -574,17 +662,14 @@ removeBtn.addActionListener(e -> {
         // TODO add your handling code here:
     }//GEN-LAST:event_bookbuttonMouseClicked
 
-    private void bookbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookbuttonActionPerformed
+        System.out.println("Books button clicked");
         javax.swing.JFrame f = new javax.swing.JFrame("Books");
-
+        f.setSize(1280, 780);                   // test size
         f.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        f.getContentPane().add(new BooksPanel());
-        f.pack();
+        f.getContentPane().add(new JPanel());   // TEMP: empty panel
         f.setLocationRelativeTo(this);
         f.setVisible(true);
-
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bookbuttonActionPerformed
+    }                                       
 
     private void MoviesbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MoviesbtnActionPerformed
         javax.swing.JFrame f = new javax.swing.JFrame("Movies");
@@ -628,6 +713,7 @@ removeBtn.addActionListener(e -> {
 
         java.awt.CardLayout card = (java.awt.CardLayout)ContentPanel.getLayout();
         card.show(ContentPanel, "History");
+
         // TODO add your handling code here:
     }//GEN-LAST:event_HistoryActionPerformed
 
@@ -643,7 +729,9 @@ removeBtn.addActionListener(e -> {
         card.show(ContentPanel, "Orders");
 
         java.awt.CardLayout card = (java.awt.CardLayout)ContentPanel.getLayout();
+
         card.show(ContentPanel, "Orders");
+
         // TODO add your handling code here:
     }//GEN-LAST:event_OrdersActionPerformed
 
@@ -654,6 +742,26 @@ removeBtn.addActionListener(e -> {
         card.show(ContentPanel, "Wishlist");
         // TODO add your handling code here:
     }//GEN-LAST:event_WishlistActionPerformed
+
+    private void addtoWishlistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addtoWishlistMouseClicked
+          int userId = currentUserId;  
+    int productId = 1;           
+
+    try {
+        boolean ok = wishlistDao.addToWishlist(userId, productId);
+        if (ok) {
+            JOptionPane.showMessageDialog(this, "Added to wishlist.");
+            loadWishlistFromDatabase();   // refresh cards
+        } else {
+            JOptionPane.showMessageDialog(this, "Already in wishlist or failed.");
+        }
+    } catch (java.sql.SQLException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error adding to wishlist.");
+    }
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addtoWishlistMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -669,6 +777,7 @@ removeBtn.addActionListener(e -> {
     private javax.swing.JButton Wishlist;
     private javax.swing.JPanel WishlistPanel;
 <<<<<<< HEAD
+<<<<<<< HEAD
     private javax.swing.JButton bookbtn;
     private javax.swing.JPanel buttonpanel;
     private javax.swing.JLabel jLabel1;
@@ -676,16 +785,15 @@ removeBtn.addActionListener(e -> {
     private javax.swing.JLabel jLabel3;
 =======
     private javax.swing.JButton bookbutton;
+=======
+    private javax.swing.JLabel addtoWishlist;
+    private javax.swing.JButton bookbtn;
+>>>>>>> 818be83 (updates made to product category)
     private javax.swing.JPanel buttonpanel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+<<<<<<< HEAD
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -693,6 +801,8 @@ removeBtn.addActionListener(e -> {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
 >>>>>>> 6541989 (Added code and modified)
+=======
+>>>>>>> 818be83 (updates made to product category)
     private javax.swing.JButton libraryBTN;
     private javax.swing.JButton newestbtn;
     private javax.swing.JButton supportbtn;

@@ -24,6 +24,7 @@ public class registration extends javax.swing.JFrame {
         initComponents();
         
         userController controller = new userController(this);
+        new userController(this);
     }
 
     /**
@@ -245,6 +246,32 @@ public class registration extends javax.swing.JFrame {
             "Success",
             JOptionPane.INFORMATION_MESSAGE);
 
+    String password = new String(jPasswordField1.getPassword()).trim();
+    User_model user = new User_model(username, email, password); 
+    userdata.userDao dao = new userdata.userDao();
+
+    user.setUsername(username);
+    user.setEmail(email);
+    user.setPasssword(password);   
+
+    
+
+    if (dao.check(user)) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+                "Email or username already exists.",
+                "Registration error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    dao.signup(user, fullname);
+    javax.swing.JOptionPane.showMessageDialog(this,
+            "Registration successful!",
+            "Success",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+
+        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed

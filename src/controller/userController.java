@@ -29,6 +29,7 @@ public class userController implements ActionListener {
     public void close() {
         this.userView.dispose();
     }
+<<<<<<< HEAD
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -46,6 +47,31 @@ public class userController implements ActionListener {
                         "Validation error",
                         JOptionPane.ERROR_MESSAGE);
                 return;
+=======
+    
+    
+    class SignUpListener implements ActionListener {
+@Override
+            public void actionPerformed(ActionEvent e){
+                try{
+                    String fullname = userView.getFullNameField().getText();
+                    String username = userView.getUsernameField().getText();
+                    String email    = userView.getEmailField().getText();
+                    char[] passwordChars = userView.getPasswordField().getPassword();
+                    String password = new String(passwordChars);
+                    
+                    User_model usermodel = new User_model( username, email, password);
+                    boolean check = userdao.check(usermodel);
+                    if(check){
+                        JOptionPane.showMessageDialog(userView, "Already exist");
+                    }else{
+                        userdao.signup(usermodel,fullname);
+                        JOptionPane.showMessageDialog(userView, "Successfull");
+                    }
+                }catch(Exception ext){
+                    System.out.println(ext);
+                }   
+>>>>>>> 818be83 (updates made to product category)
             }
 
             if (username.isEmpty() || username.equals("Username")) {
