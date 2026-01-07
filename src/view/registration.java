@@ -264,11 +264,75 @@ public class registration extends javax.swing.JFrame {
         return;
     }
 
+    if (username.isEmpty() || username.equals("Username")) {
+        JOptionPane.showMessageDialog(this,
+                "Please enter a username.",
+                "Validation error",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    if (email.isEmpty() || email.equals("Email")) {
+        JOptionPane.showMessageDialog(this,
+                "Please enter your email.",
+                "Validation error",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    if (password.isEmpty()) {
+        JOptionPane.showMessageDialog(this,
+                "Please enter a password.",
+                "Validation error",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+     String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    if (!email.matches(emailRegex)) {
+        JOptionPane.showMessageDialog(this,
+                "Please enter a valid email address (e.g. user@example.com).",
+                "Invalid email",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // 3. Password rule (example: at least 6 characters)
+    if (password.length() < 6) {
+        JOptionPane.showMessageDialog(this,
+                "Password must be at least 6 characters long.",
+                "Invalid password",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+  
+
+    // 4. Now create the model and hit DAO only if validation passed
+    User_model user = new User_model(username, email, password);
+    userdata.userDao dao = new userdata.userDao();
+    
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPasssword(password); 
+
+
+    // 5. Check if email/username already exists
+    if (dao.check(user)) {
+        JOptionPane.showMessageDialog(this,
+                "Email or username already exists.",
+                "Registration error",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // 6. Save user
     dao.signup(user, fullname);
-    javax.swing.JOptionPane.showMessageDialog(this,
+    JOptionPane.showMessageDialog(this,
             "Registration successful!",
             "Success",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.INFORMATION_MESSAGE);
+
 
 
         // TODO add your handling code here:
