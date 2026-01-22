@@ -29,7 +29,7 @@ public class userController implements ActionListener {
     public void close() {
         this.userView.dispose();
     }
-<<<<<<< HEAD
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -47,7 +47,7 @@ public class userController implements ActionListener {
                         "Validation error",
                         JOptionPane.ERROR_MESSAGE);
                 return;
-=======
+
     
     
     class SignUpListener implements ActionListener {
@@ -71,7 +71,7 @@ public class userController implements ActionListener {
                 }catch(Exception ext){
                     System.out.println(ext);
                 }   
->>>>>>> 818be83 (updates made to product category)
+
             }
 
             if (username.isEmpty() || username.equals("Username")) {

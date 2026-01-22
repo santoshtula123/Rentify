@@ -415,6 +415,7 @@
             </Component>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             <Component class="javax.swing.JLabel" name="jLabel4">
               <Properties>
@@ -480,6 +481,8 @@
               </Constraints>
             </Component>
 >>>>>>> 6541989 (Added code and modified)
+=======
+>>>>>>> 69d8926 (Updated)
           </SubComponents>
         </Container>
       </SubComponents>
