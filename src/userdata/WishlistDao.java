@@ -29,19 +29,21 @@ public class WishlistDao {
                 PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setInt(1, userId);
             pst.setInt(2, productId);
-            return pst.executeUpdate() == 1;
+            return pst.executeUpdate() > 0;
         }
     }
     
     public boolean removeFromWishlist(int userId, int productId) throws SQLException {
         String sql = "DELETE FROM wishlist WHERE user_id = ? AND product_id = ?";
-        try (Connection con = mysql.openConnection();
-                PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setInt(1, userId);
-            pst.setInt(2, productId);
-            return pst.executeUpdate() == 1;
-        }
+    try (Connection con = mysql.openConnection();
+         PreparedStatement pst = con.prepareStatement(sql)) {
+        pst.setInt(1, userId);
+        pst.setInt(2, productId);
+        int rows = pst.executeUpdate();
+        System.out.println("removeFromWishlist rows = " + rows);
+        return rows > 0;   // <-- change from == 1 to > 0
     }
+}
     public  List<ProductModel> getWishlist(int userId) throws SQLException {
         List<ProductModel> list = new ArrayList<>();
         String sql = """

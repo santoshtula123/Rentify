@@ -10,10 +10,6 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
-import model.User_model;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 
 
 /**
@@ -23,30 +19,25 @@ import java.sql.PreparedStatement;
 public class wishlist extends javax.swing.JPanel {
 
     private int currentUserId;
-    
-      public wishlist(int userId) {
+    private JPanel itemsContainer;
+    private WishlistDao wishlistDao = new WishlistDao();
+
+    public wishlist(int userId) {
         this.currentUserId = userId;
         initComponents();
+
         ContentPanel.setLayout(new java.awt.CardLayout());
-        
         ContentPanel.add(ProfilePanel, "Profile");
         ContentPanel.add(OrderPanel, "Orders");
         ContentPanel.add(HistoryPanel, "History");
         ContentPanel.add(WishlistPanel, "Wishlist");
-        
+
         setupWishlistPanel();
         loadWishlistFromDatabase();
-        
     }
 
-    
-    private JPanel itemsContainer;
-    private WishlistDao wishlistDao = new WishlistDao();
-    
-    
-   
     private void setupWishlistPanel() {
-       WishlistPanel.setLayout(null);
+        WishlistPanel.setLayout(null);
 
         itemsContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
         itemsContainer.setOpaque(false);
@@ -55,58 +46,101 @@ public class wishlist extends javax.swing.JPanel {
         WishlistPanel.add(itemsContainer);
     }
 
-        private void loadWishlistFromDatabase() {
-            try {
-                java.util.List<ProductModel> items = wishlistDao.getWishlist(currentUserId);
-                showItemsInCards(items);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this,
-                        "Failed to load wishlist.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
+    private void loadWishlistFromDatabase() {
+        try {
+            List<ProductModel> items = wishlistDao.getWishlist(currentUserId);
+        showItemsInCards(items);
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(
+            this,
+            "Failed to load wishlist.",
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+            );
         }
+    }
+
+    private void showItemsInCards(java.util.List<ProductModel> items) {
+        itemsContainer.removeAll();
+        for (ProductModel p : items) {
+            JPanel card = createCard(p);
+            itemsContainer.add(card);
+        }
+        itemsContainer.revalidate();
+        itemsContainer.repaint();
+    }
+
+    private JPanel createCard(ProductModel p) {
+    JPanel card = new JPanel();
+    card.setPreferredSize(new Dimension(180, 220));
+    card.setBackground(Color.WHITE);
+    card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+    card.setLayout(new BorderLayout());
     
+    JLabel imgLbl = new JLabel();
+imgLbl.setHorizontalAlignment(SwingConstants.CENTER);
+
+String imgPath = p.getProductImage();   // e.g. "src/pictures/Johnwickposter.jpg"
+System.out.println("Image path from model: " + imgPath);
+
+if (imgPath != null && !imgPath.isEmpty()) {
+    // strip "src/pictures/" if present
+    String prefix = "src/pictures/";
+    String fileName = imgPath.startsWith(prefix)
+            ? imgPath.substring(prefix.length())
+            : imgPath;   // e.g. "Johnwickposter.jpg"
+
+    java.net.URL url = wishlist.class.getResource("/pictures/" + fileName);
+    System.out.println("Resolved URL: " + url);
+
+    if (url != null) {
+        ImageIcon icon = new ImageIcon(url);
+        Image scaled = icon.getImage().getScaledInstance(140, 120, Image.SCALE_SMOOTH);
+        imgLbl.setIcon(new ImageIcon(scaled));
+    } else {
+        System.out.println("Image not found on classpath: /pictures/" + fileName);
+    }
+}
+    JLabel nameLbl = new JLabel(p.getProductName(), SwingConstants.CENTER);
+    nameLbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+
+    JLabel priceLbl = new JLabel("Rs. " + p.getProductPrice(), SwingConstants.CENTER);
+    priceLbl.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+    priceLbl.setForeground(new Color(220, 38, 38));
+
+    JButton removeBtn = new JButton("Remove");
+removeBtn.addActionListener(e -> {
+    System.out.println("Remove clicked: user=" + currentUserId
+                       + ", product=" + p.getProductID());
+    try {
+        boolean ok = wishlistDao.removeFromWishlist(currentUserId, p.getProductID());
+        System.out.println("removeFromWishlist returned = " + ok);
+        if (ok) {
+            loadWishlistFromDatabase();   // refresh cards
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to remove.");
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error removing from wishlist.");
+    }
+});
+
+    JPanel center = new JPanel();
+    center.setOpaque(false);
+    center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+    center.add(Box.createVerticalStrut(10));
+    center.add(nameLbl);
+    center.add(Box.createVerticalStrut(5));
+    center.add(priceLbl);
+    center.add(Box.createVerticalStrut(10));
+    center.add(removeBtn);
     
-     
-     private void showItemsInCards(List<ProductModel> items) {
-         itemsContainer.removeAll();
-         for (ProductModel p : items){
-             JPanel card = createCard(p);
-             itemsContainer.add(card);
-         }
-         itemsContainer.revalidate();
-         itemsContainer.repaint();
-     }
-     
-     private JPanel createCard(ProductModel p) {
-         JPanel card = new JPanel();
-         card.setPreferredSize(new Dimension(180, 220));
-         card.setBackground(Color.WHITE);
-         card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-         card.setLayout(new BorderLayout());
-         
-         JLabel nameLbl = new JLabel(p.getProductName(), SwingConstants.CENTER);
-         nameLbl.setFont(new Font("Segoe UI", Font.PLAIN,16));
-         
-         JLabel priceLbl = new JLabel("Rs. " + p.getProductPrice(), SwingConstants.CENTER);
-         priceLbl.setFont(new Font("Segoe UI", Font.PLAIN,14));
-         priceLbl.setForeground(new Color(220, 38, 38));
-         
-         JPanel center = new JPanel();
-         center.setOpaque(false);
-         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-         center.add(Box.createVerticalStrut(10));
-         center.add(nameLbl);
-         center.add(Box.createVerticalStrut(5));
-         center.add(priceLbl);
-         
-         card.add(center, BorderLayout.CENTER);
-         
-         return card;
-    }     
-    
+    card.add(imgLbl, BorderLayout.NORTH);
+    card.add(center, BorderLayout.CENTER);
+    return card;
+}
      public static void main(String args[]) {
          javax.swing.SwingUtilities.invokeLater(() -> {
         javax.swing.JFrame f = new javax.swing.JFrame("Wishlist test");
@@ -116,9 +150,6 @@ public class wishlist extends javax.swing.JPanel {
         f.setLocationRelativeTo(null);
         f.setVisible(true);
     });
-
-       
-       
      }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -148,7 +179,6 @@ public class wishlist extends javax.swing.JPanel {
         HistoryPanel = new javax.swing.JPanel();
         WishlistPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        addtoWishlist = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(249, 250, 251));
         setLayout(null);
@@ -344,16 +374,6 @@ public class wishlist extends javax.swing.JPanel {
         WishlistPanel.add(jLabel2);
         jLabel2.setBounds(60, 30, 160, 54);
 
-        addtoWishlist.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        addtoWishlist.setText("Add to Wishlist");
-        addtoWishlist.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                addtoWishlistMouseClicked(evt);
-            }
-        });
-        WishlistPanel.add(addtoWishlist);
-        addtoWishlist.setBounds(770, 460, 140, 30);
-
         ContentPanel.add(WishlistPanel, "card2");
 
         add(ContentPanel);
@@ -444,26 +464,6 @@ public class wishlist extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_WishlistActionPerformed
 
-    private void addtoWishlistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addtoWishlistMouseClicked
-          int userId = currentUserId;  
-    int productId = 1;           
-
-    try {
-        boolean ok = wishlistDao.addToWishlist(userId, productId);
-        if (ok) {
-            JOptionPane.showMessageDialog(this, "Added to wishlist.");
-            loadWishlistFromDatabase();   // refresh cards
-        } else {
-            JOptionPane.showMessageDialog(this, "Already in wishlist or failed.");
-        }
-    } catch (java.sql.SQLException ex) {
-        ex.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error adding to wishlist.");
-    }
-
-        // TODO add your handling code here:
-    }//GEN-LAST:event_addtoWishlistMouseClicked
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ContentPanel;
@@ -477,7 +477,6 @@ public class wishlist extends javax.swing.JPanel {
     private javax.swing.JPanel ProfilePanel;
     private javax.swing.JButton Wishlist;
     private javax.swing.JPanel WishlistPanel;
-    private javax.swing.JLabel addtoWishlist;
     private javax.swing.JButton bookbtn;
     private javax.swing.JPanel buttonpanel;
     private javax.swing.JLabel jLabel1;
@@ -488,5 +487,6 @@ public class wishlist extends javax.swing.JPanel {
     private javax.swing.JButton supportbtn;
     // End of variables declaration//GEN-END:variables
    
+
 
 }
