@@ -22,7 +22,8 @@ public class registration extends javax.swing.JFrame {
      */
     public registration() {
         initComponents();
-        new userController(this);
+        
+        userController controller = new userController(this);
     }
 
     /**
@@ -162,91 +163,89 @@ public class registration extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String fullname = jTextField1.getText().trim();
-        String username = jTextField2.getText().trim();
-        String email    = jTextField3.getText().trim();
-        String password = new String(jPasswordField1.getPassword()).trim();     
-
-     if (fullname.isEmpty() || fullname.equals("Full Name")) {
-        JOptionPane.showMessageDialog(this,
-                "Please enter your full name.",
-                "Validation error",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    if (username.isEmpty() || username.equals("Username")) {
-        JOptionPane.showMessageDialog(this,
-                "Please enter a username.",
-                "Validation error",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    if (email.isEmpty() || email.equals("Email")) {
-        JOptionPane.showMessageDialog(this,
-                "Please enter your email.",
-                "Validation error",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    if (password.isEmpty()) {
-        JOptionPane.showMessageDialog(this,
-                "Please enter a password.",
-                "Validation error",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-     String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-    if (!email.matches(emailRegex)) {
-        JOptionPane.showMessageDialog(this,
-                "Please enter a valid email address (e.g. user@example.com).",
-                "Invalid email",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // 3. Password rule (example: at least 6 characters)
-    if (password.length() < 6) {
-        JOptionPane.showMessageDialog(this,
-                "Password must be at least 6 characters long.",
-                "Invalid password",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-  
-
-    // 4. Now create the model and hit DAO only if validation passed
-    User_model user = new User_model(username, email, password);
-    userdata.userDao dao = new userdata.userDao();
-    
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPasssword(password); 
-
-
-    // 5. Check if email/username already exists
-    if (dao.check(user)) {
-        JOptionPane.showMessageDialog(this,
-                "Email or username already exists.",
-                "Registration error",
-                JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // 6. Save user
-    dao.signup(user, fullname);
-    JOptionPane.showMessageDialog(this,
-            "Registration successful!",
-            "Success",
-            JOptionPane.INFORMATION_MESSAGE);
-
-
-
-        // TODO add your handling code here:
+//        String fullname = jTextField1.getText().trim();
+//        String username = jTextField2.getText().trim();
+//        String email    = jTextField3.getText().trim();
+//        String password = new String(jPasswordField1.getPassword()).trim();     
+//
+//     if (fullname.isEmpty() || fullname.equals("Full Name")) {
+//        JOptionPane.showMessageDialog(this,
+//                "Please enter your full name.",
+//                "Validation error",
+//                JOptionPane.ERROR_MESSAGE);
+//        return;
+//    }
+//
+//    if (username.isEmpty() || username.equals("Username")) {
+//        JOptionPane.showMessageDialog(this,
+//                "Please enter a username.",
+//                "Validation error",
+//                JOptionPane.ERROR_MESSAGE);
+//        return;
+//    }
+//    
+//    if (email.isEmpty() || email.equals("Email")) {
+//        JOptionPane.showMessageDialog(this,
+//                "Please enter your email.",
+//                "Validation error",
+//                JOptionPane.ERROR_MESSAGE);
+//        return;
+//    }
+//
+//    if (password.isEmpty()) {
+//        JOptionPane.showMessageDialog(this,
+//                "Please enter a password.",
+//                "Validation error",
+//                JOptionPane.ERROR_MESSAGE);
+//        return;
+//    }
+//    
+//     String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+//    if (!email.matches(emailRegex)) {
+//        JOptionPane.showMessageDialog(this,
+//                "Please enter a valid email address (e.g. user@example.com).",
+//                "Invalid email",
+//                JOptionPane.ERROR_MESSAGE);
+//        return;
+//    }
+//
+//    // 3. Password rule (example: at least 6 characters)
+//    if (password.length() < 6) {
+//        JOptionPane.showMessageDialog(this,
+//                "Password must be at least 6 characters long.",
+//                "Invalid password",
+//                JOptionPane.ERROR_MESSAGE);
+//        return;
+//    }
+//    
+//  
+//
+//    // 4. Now create the model and hit DAO only if validation passed
+//    User_model user = new User_model(username, email, password);
+//    userdata.userDao dao = new userdata.userDao();
+//    
+//        user.setUsername(username);
+//        user.setEmail(email);
+//        user.setPasssword(password); 
+//
+//
+//    // 5. Check if email/username already exists
+//    if (dao.check(user)) {
+//        JOptionPane.showMessageDialog(this,
+//                "Email or username already exists.",
+//                "Registration error",
+//                JOptionPane.ERROR_MESSAGE);
+//        return;
+//    }
+//
+//    // 6. Save user
+//    dao.signup(user, fullname);
+//    JOptionPane.showMessageDialog(this,
+//            "Registration successful!",
+//            "Success",
+//            JOptionPane.INFORMATION_MESSAGE);
+//
+           // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
