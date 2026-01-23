@@ -71,6 +71,7 @@ public class wishlist extends javax.swing.JPanel {
         itemsContainer.repaint();
     }
 
+    
     private JPanel createCard(ProductModel p) {
     JPanel card = new JPanel();
     card.setPreferredSize(new Dimension(180, 220));
